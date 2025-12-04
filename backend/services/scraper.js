@@ -41,10 +41,7 @@ class AmazonScraper {
         asin,
         title: this.extractTitle($),
         bulletPoints: this.extractBulletPoints($),
-        description: this.extractDescription($),
-        price: this.extractPrice($),
-        rating: this.extractRating($),
-        imageUrl: this.extractImage($)
+        description: this.extractDescription($)
       };
 
       // Validate we got at least a title
@@ -57,14 +54,26 @@ class AmazonScraper {
 
     } catch (error) {
       console.error('Scraping error:', error.message);
+      console.error('Full error details:', error.response?.status || 'No response status');
+      
+      // Log the actual error for debugging
+      if (error.response?.status === 503) {
+        console.error('Amazon returned 503 - Service Unavailable. Amazon may be blocking requests.');
+      } else if (error.response?.status === 403) {
+        console.error('Amazon returned 403 - Forbidden. IP may be rate-limited.');
+      } else if (error.code === 'ECONNABORTED') {
+        console.error('Request timed out. Amazon may be slow or blocking.');
+      }
 
-      // Fallback: Return mock data for development
-      if (process.env.NODE_ENV === 'development' || error.message.includes('timeout')) {
-        console.log('Using mock product data for development');
+      // Only use mock data if explicitly in development mode AND it's a timeout/network error
+      if (process.env.NODE_ENV === 'development' && 
+          (error.message.includes('timeout') || error.code === 'ECONNABORTED')) {
+        console.warn('Network error detected. Using mock product data for development.');
         return this.generateMockProductData(asin);
       }
 
-      throw new Error(`Scraping: ${error.message}`);
+      // Otherwise, throw the error so we know real scraping failed
+      throw new Error(`Scraping failed for ASIN ${asin}: ${error.message}`);
     }
   }
 
@@ -154,7 +163,6 @@ class AmazonScraper {
     return description || 'Product description not available';
   }
 
-  // code to remove markups from description
   cleanDescription(text) {
     if (!text || typeof text !== 'string') return '';
 
@@ -196,6 +204,56 @@ class AmazonScraper {
     return text;
   }
 
+  // Extract product price
+  extractPrice($) {
+    let price = '';
+    const priceSelectors = [
+      '.a-price-whole',
+      '.a-price.a-text-price.a-size-medium.a-color-price',
+      '[data-a-color="price"]'
+    ];
+    
+    for (const selector of priceSelectors) {
+      price = $(selector).first().text().trim();
+      if (price) break;
+    }
+    
+    return price || 'Price not available';
+  }
+
+  // Extract product rating
+  extractRating($) {
+    let rating = '';
+    const ratingSelectors = [
+      '.a-icon-star span',
+      '[data-a-icon-star-small-part] span',
+      '.a-icon-star-small span'
+    ];
+    
+    for (const selector of ratingSelectors) {
+      rating = $(selector).first().text().trim();
+      if (rating) break;
+    }
+    
+    return rating || 'No rating available';
+  }
+
+  // Extract product image
+  extractImage($) {
+    let imageUrl = '';
+    const imageSelectors = [
+      '#landingImage',
+      '.a-dynamic-image',
+      '#altImages img'
+    ];
+    
+    for (const selector of imageSelectors) {
+      imageUrl = $(selector).attr('src');
+      if (imageUrl) break;
+    }
+    
+    return imageUrl || 'Image not available';
+  }
 
   // Generate mock product data for development/testing
   generateMockProductData(asin) {
