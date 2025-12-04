@@ -1,0 +1,72 @@
+.App {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 50px;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: none;
+  height: 100%;
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+}
+
+.comparison-section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  color: #495057;
+}
+
+.bullet-point {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.keyword-badge {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.diff-highlight {
+  background-color: #e6fffa;
+  border-left: 4px solid #20c997;
+  padding: 10px;
+}
+
+.original-content {
+  color: #6c757d;
+}
+
+.optimized-content {
+  color: #212529;
+}
+
+/* History Table */
+.history-table th {
+  background-color: #f1f3f5;
+}
+
+.history-row:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.asin-input {
+  max-width: 500px;
+  margin: 0 auto;
+}
