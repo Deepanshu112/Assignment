@@ -30,11 +30,6 @@ class Database {
     } catch (error) {
       console.error('❌ Database connection failed!');
       console.error('Error details:', error.message);
-      console.log('\n📋 Troubleshooting steps:');
-      console.log('1. Is MySQL running in XAMPP/WAMP/MAMP?');
-      console.log('2. Check credentials in .env file');
-      console.log('3. Try default credentials: root with no password');
-      console.log('4. Verify database exists in phpMyAdmin');
       throw error;
     }
   }
@@ -45,7 +40,6 @@ class Database {
       return results;
     } catch (error) {
       console.error('Database query error:', error.message);
-      console.error('SQL:', sql);
       throw error;
     }
   }

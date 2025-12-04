@@ -154,7 +154,7 @@ class AmazonScraper {
     return description || 'Product description not available';
   }
 
-  // Clean description: remove CSS, JS, HTML markup, and excessive whitespace
+  // code to remove markups from description
   cleanDescription(text) {
     if (!text || typeof text !== 'string') return '';
 
@@ -196,54 +196,6 @@ class AmazonScraper {
     return text;
   }
 
-  // Extract price (optional)
-  extractPrice($) {
-    const priceSelectors = [
-      '.a-price .a-offscreen',
-      '#priceblock_ourprice',
-      '#priceblock_dealprice',
-      '.a-price[data-a-size="xl"]'
-    ];
-
-    for (const selector of priceSelectors) {
-      const price = $(selector).first().text().trim();
-      if (price) return price;
-    }
-
-    return 'Price not available';
-  }
-
-  // Extract rating (optional)
-  extractRating($) {
-    const ratingSelectors = [
-      '#acrPopover',
-      '.a-icon-star',
-      '[data-hook="rating-out-of-text"]'
-    ];
-
-    for (const selector of ratingSelectors) {
-      const rating = $(selector).first().text().trim();
-      if (rating) return rating;
-    }
-
-    return 'Rating not available';
-  }
-
-  // Extract image URL (optional)
-  extractImage($) {
-    const imageSelectors = [
-      '#landingImage',
-      '#imgBlkFront',
-      '.a-dynamic-image'
-    ];
-
-    for (const selector of imageSelectors) {
-      const image = $(selector).attr('src');
-      if (image) return image;
-    }
-
-    return '';
-  }
 
   // Generate mock product data for development/testing
   generateMockProductData(asin) {

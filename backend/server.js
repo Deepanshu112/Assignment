@@ -11,15 +11,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
-app.use(express.json()); // Parse JSON bodies
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
@@ -29,7 +28,7 @@ app.use((req, res, next) => {
 app.use('/api/optimize', optimizeRoutes);
 app.use('/api/history', historyRoutes);
 
-// Health check endpoint
+
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -56,10 +55,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+
 async function startServer() {
   try {
-    // Connect to database
     await database.connect();
     await database.initialize();
     
@@ -76,4 +74,4 @@ async function startServer() {
 
 startServer();
 
-module.exports = app; // For testing
+module.exports = app;
